@@ -15,7 +15,7 @@ import java.util.Date;
 public class ReservationModel {
     @Id
     private String id;
-    private Long userId;
+    private String userId;
     private Date reservationDate;
     private String reservationDetails;
 }

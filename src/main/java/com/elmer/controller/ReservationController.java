@@ -1,4 +1,4 @@
-/*package com.elmer.controller;
+package com.elmer.controller;
 
 import com.elmer.model.reservation.ReservationModel;
 import com.elmer.service.reservation.ReservationService;
@@ -20,22 +20,23 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationModel> createReservation(@RequestBody ReservationModel reservation){
-        reservationService.createReservation(reservation);
+        reservationService.save(reservation);
         log.info("Reservation creada exitosamente: {}", reservation);
         return new ResponseEntity<>(reservation, HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<ReservationModel>> getAllReservations(){
-        List<ReservationModel> listReservation = reservationService.getAllReservation();
+        List<ReservationModel> listReservation = reservationService.getAllReservations();
         return ResponseEntity.ok(listReservation);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationModel> getReservationById(@PathVariable("id") String id){
-        Optional<ReservationModel> reservation = reservationService.getReservationById(id);
-        return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return reservationService.getReservationById(id).map(reservation -> {
+            log.info("Reservación encontrada: {}", reservation);
+            return new ResponseEntity<>(reservation, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
@@ -52,14 +53,12 @@ public class ReservationController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ReservationModel> updateReservation(@RequestBody ReservationModel reservationModel, @PathVariable("id") String id){
-        Optional<ReservationModel> reservation = reservationService.getReservationById(id);
-        if(reservation.isPresent()){
-            reservationModel.setId(id);
-            ReservationModel updateReservation = reservationService.updateReservation(reservationModel, id);
-            log.info("Reservacion actualizada correctamente: {}", updateReservation);
-            return new ResponseEntity<>(updateReservation, HttpStatus.OK);
+        ReservationModel reservation = reservationService.updateReservation(reservationModel, id);
+        if(reservation!=null){
+            log.info("Reservación actualizada {}", reservation);
+            return new ResponseEntity<>(reservation, HttpStatus.OK);
         }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}*/
+}
