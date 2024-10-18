@@ -1,6 +1,6 @@
-package com.elmer.controller;
+/*package com.elmer.controller;
 
-import com.elmer.repository.reservation.ReservationModel;
+import com.elmer.model.reservation.ReservationModel;
 import com.elmer.service.reservation.ReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,14 +32,14 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReservationModel> getReservationById(@PathVariable("id") Long id){
+    public ResponseEntity<ReservationModel> getReservationById(@PathVariable("id") String id){
         Optional<ReservationModel> reservation = reservationService.getReservationById(id);
         return reservation.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReservation(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteReservation(@PathVariable("id") String id){
         Optional<ReservationModel> reservation = reservationService.getReservationById(id);
         if(reservation.isPresent()){
             reservationService.deleteReservation(id);
@@ -51,7 +51,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ReservationModel> updateReservation(@RequestBody ReservationModel reservationModel, @PathVariable("id") Long id){
+    public ResponseEntity<ReservationModel> updateReservation(@RequestBody ReservationModel reservationModel, @PathVariable("id") String id){
         Optional<ReservationModel> reservation = reservationService.getReservationById(id);
         if(reservation.isPresent()){
             reservationModel.setId(id);
@@ -62,4 +62,4 @@ public class ReservationController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}
+}*/

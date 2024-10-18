@@ -1,13 +1,12 @@
 package com.elmer.controller;
 
-import com.elmer.repository.user.UserModel;
+import com.elmer.model.user.UserModel;
 import com.elmer.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,36 +16,31 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    Long contador = 0L;
     public UserController(UserService userService) { this.userService = userService; }
 
     @PostMapping
     public ResponseEntity<UserModel> createUser(@RequestBody UserModel user){
-        user.setId(contador++);
-        userService.createUser(user);
+        userService.save(user);
         log.info("Usuario creado exitosamente: {}", user);
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @GetMapping("/")
     public ResponseEntity<List<UserModel>> getAllUsers() {
-        List<UserModel> listUsers = userService.getAllUsers();
+        List<UserModel> listUsers = userService.allUsers();
         return ResponseEntity.ok(listUsers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModel> findById(@PathVariable("id") Long id){
-        Optional<UserModel> user = userService.getUserById(id);
-        if(user.isPresent()){
-            log.info("Usuario encontrado: {}", user.get());
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<UserModel> findById(@PathVariable("id") String id){
+        return userService.getUserById(id).map(user ->{
+            log.info("Usuario encontrado: {}", user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") String id){
         Optional<UserModel> user = userService.getUserById(id);
         if(user.isPresent()){
             userService.deleteUser(id);
@@ -58,18 +52,12 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserModel> updateUser(@RequestBody UserModel userModel, @PathVariable("id") Long id){
-        Optional<UserModel> user = userService.getUserById(id);
-        if(user.isPresent()){
-            UserModel getUser = user.get();
-            getUser.setName(userModel.getName());
-            getUser.setEmail(userModel.getEmail());
-            getUser.setLastName(userModel.getLastName());
-            getUser.setPassword(userModel.getPassword());
-            userService.updateUser(getUser, id);
-            log.info("Usuario Actualizado: {}", getUser);
-            return new ResponseEntity<>(getUser, HttpStatus.OK);
-        }else{
+    public ResponseEntity<UserModel> updateUser(@RequestBody UserModel userModel, @PathVariable("id") String id){
+        UserModel user = userService.updateUser(userModel, id);
+        if(user!=null){
+            log.info("Usuario actualizado {}", user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        }else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

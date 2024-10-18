@@ -1,18 +1,33 @@
 package com.elmer.service.user;
 
-import com.elmer.repository.user.UserModel;
+import com.elmer.model.user.UserModel;
+import com.elmer.repository.user.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService {
-    UserModel createUser(UserModel user);
+@Service
+public class UserService {
 
-    List<UserModel> getAllUsers();
+    private final UserRepository userRepository;
 
-    Optional<UserModel> getUserById(Long id);
+    @Autowired
+    public UserService(UserRepository userRepository) { this.userRepository = userRepository; }
 
-    void deleteUser (Long id);
+    public UserModel save(UserModel user){ return userRepository.save(user); }
+    public List<UserModel> allUsers(){ return userRepository.findAll(); }
+    public Optional<UserModel> getUserById(String id) { return userRepository.findById(id); }
+    public void deleteUser(String id) { userRepository.deleteById(id); }
 
-    UserModel updateUser (UserModel user, Long i);
+    public UserModel updateUser(UserModel user, String id){
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setName(user.getName());
+            existingUser.setLastName(user.getLastName());
+            existingUser.setEmail(user.getEmail());
+            existingUser.setPassword(user.getPassword());
+            return userRepository.save(existingUser);
+        }).orElse(null);
+    }
 }

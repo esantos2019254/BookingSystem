@@ -1,6 +1,6 @@
-package com.elmer.service.reservation;
+/*package com.elmer.service.reservation;
 
-import com.elmer.repository.reservation.ReservationModel;
+import com.elmer.model.reservation.ReservationModel;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,10 @@ public interface ReservationService {
 
     List<ReservationModel> getAllReservation();
 
-    Optional<ReservationModel> getReservationById(Long id);
+    Optional<ReservationModel> getReservationById(String id);
 
-    ReservationModel updateReservation(ReservationModel reservation, Long id);
+    ReservationModel updateReservation(ReservationModel reservation, String id);
 
-    void deleteReservation(Long id);
+    void deleteReservation(String id);
 }
+*/
