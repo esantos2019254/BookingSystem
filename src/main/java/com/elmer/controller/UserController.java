@@ -18,13 +18,6 @@ public class UserController {
     private final UserService userService;
     public UserController(UserService userService) { this.userService = userService; }
 
-    @PostMapping
-    public ResponseEntity<UserModel> createUser(@RequestBody UserModel user){
-        userService.save(user);
-        log.info("Usuario creado exitosamente: {}", user);
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
-    }
-
     @GetMapping("/")
     public ResponseEntity<List<UserModel>> getAllUsers() {
         List<UserModel> listUsers = userService.allUsers();
